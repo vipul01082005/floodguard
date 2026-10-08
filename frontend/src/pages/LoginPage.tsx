@@ -22,15 +22,42 @@ const LoginPage = () => {
     setIsLoading(true);
     setError('');
     
-    try {
-      login({ id: 'user-' + Date.now(), email, name: email.split('@')[0], role: 'USER' });
-      navigate('/dashboard');
-    } catch (err: any) {
-      setError(err.message || 'Failed to login. Please try again.');
-    } finally {
-      setIsLoading(false);
+try {
+  const res = await fetch(
+    'https://floodguard-api-h1bf.onrender.com/api/auth/login',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email,
+        password
+      })
     }
+  );
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data?.error?.message || 'Login failed');
+  }
+
+  const user = {
+    id: data.user.id,
+    email: data.user.email,
+    name: email.split('@')[0],
+    role: data.user.role === 'admin' ? 'ADMIN' : 'USER'
   };
+
+  login(user, data.token);
+
+  navigate('/dashboard');
+} catch (err: any) {
+  setError(err.message || 'Failed to login. Please try again.');
+} finally {
+  setIsLoading(false);
+}
 
   const handleDemoLogin = async (role: 'USER' | 'ADMIN') => {
     setIsLoading(true);
