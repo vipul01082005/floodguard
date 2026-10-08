@@ -48,7 +48,7 @@ const LoginPage = () => {
         id: data.user.id,
         email: data.user.email,
         name: email.split('@')[0],
-        role: data.user.role === 'admin' ? 'ADMIN' : 'USER'
+        role: data.user.role === 'admin' ? ('ADMIN' as const) : ('USER' as const)
       };
 
       login(user, data.token);
