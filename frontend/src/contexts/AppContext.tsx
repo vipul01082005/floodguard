@@ -8,7 +8,7 @@ interface AppContextType {
   selectedLocation: SelectedLocation | null;
   alerts: Alert[];
   isDarkMode: boolean;
-  login: (user: User) => void;
+  login: (user: User, token?: string) => void;
   logout: () => void;
   register: (user: User) => void;
   setDemoMode: (isActive: boolean, scenario?: DemoScenario) => void;
@@ -64,7 +64,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         user: JSON.parse(savedUser),
         isAuthenticated: true,
         isLoading: false,
-        token: 'demo-token',
+        token: localStorage.getItem('fg_token'),
       });
     } else {
       setAuthState(prev => ({ ...prev, isLoading: false }));
@@ -78,15 +78,29 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   }, [isDarkMode]);
 
-  const login = (user: User) => {
-    localStorage.setItem('fg_user', JSON.stringify(user));
-    setAuthState({ user, isAuthenticated: true, isLoading: false, token: 'demo-token' });
-  };
+  const login = (user: User, token = 'demo-token') => {
+  localStorage.setItem('fg_user', JSON.stringify(user));
+  localStorage.setItem('fg_token', token);
+
+  setAuthState({
+    user,
+    isAuthenticated: true,
+    isLoading: false,
+    token
+  });
+};
 
   const logout = () => {
-    localStorage.removeItem('fg_user');
-    setAuthState({ user: null, isAuthenticated: false, isLoading: false, token: null });
-  };
+  localStorage.removeItem('fg_user');
+  localStorage.removeItem('fg_token');
+
+  setAuthState({
+    user: null,
+    isAuthenticated: false,
+    isLoading: false,
+    token: null
+  });
+};
 
   const register = (user: User) => {
     login(user);
