@@ -1,70 +1,106 @@
-# FloodGuard
+# 🌊 FloodGuard
 
-**Predict, Explain, Warn, Route, Crowdsource.**
+**Predict. Explain. Warn. Route. Crowdsource.**
 
-## Problem Statement
-Urban areas face increasing flood risks due to climate change, overwhelming traditional prediction and response systems. Citizens lack real-time, actionable insights on localized flooding and safe routes.
+> An intelligent flood-risk platform combining geospatial intelligence, machine learning, real-time alerts, safe routing, and community-driven incident reporting.
 
-## Solution Overview
-FloodGuard is a comprehensive environmental technology platform that combines machine learning, real-time crowdsourcing, and geospatial routing to provide precise, timely flood risk intelligence to citizens and authorities.
+---
 
-## Key Features
-*   **Predict:** ML-powered local flood risk assessment.
-*   **Explain:** Explainable AI (XAI) insights into risk factors.
-*   **Warn:** Real-time localized alerts via SNS.
-*   **Route:** Safe routing comparing multiple paths avoiding high-risk zones.
-*   **Crowdsource:** User-reported incidents with image uploads.
+## 🚀 Live Demo
 
-## Architecture
+### 🌐 Try FloodGuard
+
+**[Open FloodGuard →](https://floodguard-eta.vercel.app)**
+
+### Backend API
+
+**[FloodGuard API →](https://floodguard-api-h1bf.onrender.com)**
+
+### Backend Health Check
+
+**[API Health →](https://floodguard-api-h1bf.onrender.com/health)**
+
+> The frontend is deployed on Vercel and the backend API is deployed on Render.
+
+---
+
+## 🎯 Problem Statement
+
+Urban areas face increasing flood risks due to climate change, rapid urbanization, inadequate drainage infrastructure, and limited localized information.
+
+During flooding, citizens often lack:
+
+- Real-time information about nearby flood risks
+- Safe routes that avoid flooded areas
+- Reliable incident reports from other citizens
+- Actionable warnings
+- Explainable information about why an area is considered risky
+
+Traditional systems often provide broad weather or disaster information without enough **localized, actionable intelligence**.
+
+---
+
+## 💡 Solution Overview
+
+**FloodGuard** is a flood-risk intelligence platform designed to help citizens and authorities **understand, report, and respond to localized flooding.**
+
+The platform combines:
+
+- 🧠 Machine Learning
+- 🗺️ Geospatial intelligence
+- 📍 Real-time location detection
+- 🚨 Risk alerts
+- 🛣️ Safe route comparison
+- 👥 Crowdsourced incident reporting
+- 📸 Image-based incident evidence
+- 🔐 Authentication and role-based access
+- ☁️ Cloud-ready AWS architecture
+
+---
+
+## ✨ Key Features
+
+### 🧠 Predict
+
+ML-powered local flood-risk assessment based on environmental and geographical factors.
+
+### 🔍 Explain
+
+Explainable AI insights help users understand **why** a particular area has a higher flood risk.
+
+Example factors include:
+
+- Rainfall intensity
+- Drainage conditions
+- Historical flood patterns
+- Elevation
+- Local risk zones
+
+---
+
+### 🚨 Warn
+
+Localized flood alerts help users stay informed about potentially dangerous areas.
+
+The architecture supports event-driven alert delivery using AWS services such as:
+
+- Amazon EventBridge
+- AWS Lambda
+- Amazon SNS
+
+---
+
+### 🛣️ Route
+
+Compare multiple routes while considering flood-risk zones.
+
+Instead of simply finding the shortest route, FloodGuard is designed to help users find a **safer route**.
+
 ```text
-Client (React/Tailwind) -> CloudFront -> S3 (Static Assets)
-Client -> API Gateway -> Lambda Functions -> DynamoDB (Data) / S3 (Images)
-Events -> EventBridge -> Lambda -> SNS (Alerts)
-Auth via Cognito
-```
+Route A → Shortest but HIGH flood risk
+Route B → Slightly longer but LOW flood risk
+Route C → Moderate risk
 
-## Tech Stack
-*   **Frontend:** React, TailwindCSS, TypeScript
-*   **Backend:** Node.js, Express, AWS Lambda, API Gateway
-*   **Database:** DynamoDB
-*   **Storage:** S3
-*   **Auth:** Cognito
-*   **Infrastructure:** AWS SAM, CloudFormation
-*   **ML:** Python, Scikit-learn (Simulated/Offline)
+          ↓
 
-## Quick Start
-1.  Clone repository.
-2.  `npm install` in both `frontend` and `backend` (if structured as such) or root for monorepo.
-3.  Copy `.env.example` to `.env`.
-4.  Start local development: `npm run dev`.
-
-## Demo Mode
-Set `DEMO_MODE=true` in `.env` to bypass external API requirements and use mock data for rapid testing and demonstrations.
-
-## AWS Deployment
-See `docs/DEPLOYMENT.md` for AWS SAM instructions.
-
-## Project Structure
-*   `frontend/`: React application.
-*   `backend/` or `handlers/`: Lambda functions or express app.
-*   `infrastructure/`: AWS SAM templates.
-*   `docs/`: Extensive project documentation.
-*   `ml/`: Machine learning models and scripts.
-
-## API Documentation
-See `docs/API.md` for detailed endpoint definitions.
-
-## Security
-See `docs/SECURITY.md` for comprehensive security strategies.
-
-## Environmental Impact
-Empowers communities to build resilience against extreme weather events, minimizing economic loss and protecting lives through early warning and informed navigation.
-
-## Hackathon Context
-Developed for [Hackathon Name/Context]. Focuses on scalable, serverless architecture to ensure high availability during disaster scenarios.
-
-## Contributing
-Contributions are welcome. Please adhere to standard coding practices.
-
-## License
-MIT License
+Recommended Route → Route B
