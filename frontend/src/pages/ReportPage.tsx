@@ -94,18 +94,22 @@ export const ReportPage: React.FC = () => {
         <section>
           <h2 className="text-lg font-semibold text-white mb-4">3. Where is it? <span className="text-red-400">*</span></h2>
           <div className="flex gap-2 mb-3">
-            <button
-              type="button"
-              onClick={handleAutoDetect}
-              className="flex-1 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors"
-            >
-              <Navigation className="w-4 h-4 text-blue-400" />
-              Use Current Location
-            </button>
-         <button
+          <button
+  type="button"
+  onClick={() => {
+    setLocation('Current Location (Detected)');
+    setError(null);
+  }}
+  className="flex-1 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors"
+>
+  <Navigation className="w-4 h-4 text-blue-400" />
+  Use Current Location
+</button>
+       <button
   type="button"
   onClick={() => {
     setLocation('Pinned Location');
+    setError(null);
   }}
   className="flex-1 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors"
 >
