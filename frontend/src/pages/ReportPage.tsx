@@ -102,13 +102,16 @@ export const ReportPage: React.FC = () => {
               <Navigation className="w-4 h-4 text-blue-400" />
               Use Current Location
             </button>
-            <button
-              type="button"
-              className="flex-1 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors"
-            >
-              <MapPin className="w-4 h-4 text-orange-400" />
-              Pin on Map
-            </button>
+         <button
+  type="button"
+  onClick={() => {
+    setLocation('Pinned Location');
+  }}
+  className="flex-1 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors"
+>
+  <MapPin className="w-4 h-4 text-orange-400" />
+  Pin on Map
+</button>
           </div>
           <div className="relative">
             <input
