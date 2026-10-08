@@ -2,7 +2,7 @@ import { RiskZone, RiskAssessment, RouteOption, Report, Alert, SystemHealth, Rep
 import { DEMO_RISK_ZONES, DEMO_RISK_ASSESSMENTS, DEMO_ROUTES, DEMO_REPORTS, DEMO_ALERTS } from './demoData';
 import { submitReport as svcSubmitReport } from './reportService';
 
-const isDemoMode = true; // Wrapper logic can toggle this
+const isDemoMode = false; // Wrapper logic can toggle this
 
 export const getRiskZones = async (): Promise<RiskZone[]> => {
   if (isDemoMode) return DEMO_RISK_ZONES;
