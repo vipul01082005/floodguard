@@ -1,77 +1,106 @@
-import { RiskZone, RiskAssessment, RouteOption, Report, Alert, SystemHealth, ReportSubmission, OperationalMetrics } from '../types';
-import { DEMO_RISK_ZONES, DEMO_RISK_ASSESSMENTS, DEMO_ROUTES, DEMO_REPORTS, DEMO_ALERTS } from './demoData';
-import { submitReport as svcSubmitReport } from './reportService';
+import {
+  RiskZone,
+  RiskAssessment,
+  RouteOption,
+  Report,
+  Alert,
+  SystemHealth,
+  ReportSubmission,
+  OperationalMetrics
+} from '../types';
 
-const isDemoMode = false; // Wrapper logic can toggle this
+const API_URL = 'https://floodguard-api-h1bf.onrender.com';
+
+const getHeaders = () => {
+  const token = localStorage.getItem('fg_token');
+
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {})
+  };
+};
 
 export const getRiskZones = async (): Promise<RiskZone[]> => {
-  if (isDemoMode) return DEMO_RISK_ZONES;
   try {
-    const res = await fetch('/api/zones');
-    return await res.json();
-  } catch {
+    const res = await fetch(`${API_URL}/api/risk/zones`);
+
+    if (!res.ok) throw new Error('Failed to fetch risk zones');
+
+    const data = await res.json();
+    return data.zones || [];
+  } catch (error) {
+    console.error('getRiskZones:', error);
     return [];
   }
 };
 
-export const getRiskAssessment = async (id: string): Promise<RiskAssessment | null> => {
-  if (isDemoMode) return DEMO_RISK_ASSESSMENTS[id] || null;
+export const getRiskAssessment = async (
+  id: string
+): Promise<RiskAssessment | null> => {
   try {
-    const res = await fetch(`/api/assessments/${id}`);
+    const res = await fetch(`${API_URL}/api/risk/assessment/${id}`);
+
+    if (!res.ok) throw new Error('Failed to fetch risk assessment');
+
     return await res.json();
-  } catch {
+  } catch (error) {
+    console.error('getRiskAssessment:', error);
     return null;
   }
 };
 
 export const getRoutes = async (): Promise<RouteOption[]> => {
-  if (isDemoMode) return DEMO_ROUTES;
-  try {
-    const res = await fetch('/api/routes');
-    return await res.json();
-  } catch {
-    return [];
-  }
+  return [];
 };
 
-export const submitReport = async (report: ReportSubmission): Promise<Report> => {
-  if (isDemoMode) return svcSubmitReport(report, 'demo-user');
-  try {
-    const res = await fetch('/api/reports', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(report)
-    });
-    return await res.json();
-  } catch (e: any) {
-    throw new Error(e.message);
+export const submitReport = async (
+  report: ReportSubmission
+): Promise<Report> => {
+  const res = await fetch(`${API_URL}/api/reports`, {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify(report)
+  });
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => null);
+    throw new Error(data?.error?.message || 'Failed to submit report');
   }
+
+  return await res.json();
 };
 
 export const getAlerts = async (): Promise<Alert[]> => {
-  if (isDemoMode) return DEMO_ALERTS;
-  try {
-    const res = await fetch('/api/alerts');
-    return await res.json();
-  } catch {
-    return [];
+  const res = await fetch(`${API_URL}/api/alerts`, {
+    headers: getHeaders()
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to fetch alerts');
   }
+
+  const data = await res.json();
+  return data.alerts || [];
 };
 
 export const getSystemHealth = async (): Promise<SystemHealth> => {
-  if (isDemoMode) {
+  try {
+    const res = await fetch(`${API_URL}/api/health`);
+
+    if (!res.ok) throw new Error('Health check failed');
+
+    const data = await res.json();
+
     return {
       api: 'HEALTHY',
-      database: 'HEALTHY',
+      database: data.services?.database === 'ok' ? 'HEALTHY' : 'UNHEALTHY',
       prediction: 'HEALTHY',
-      notifications: 'HEALTHY',
-      lastUpdated: new Date().toISOString()
+      notifications: data.services?.storage === 'ok' ? 'HEALTHY' : 'UNHEALTHY',
+      lastUpdated: data.timestamp
     };
-  }
-  try {
-    const res = await fetch('/api/health');
-    return await res.json();
-  } catch {
+  } catch (error) {
+    console.error('getSystemHealth:', error);
+
     return {
       api: 'UNHEALTHY',
       database: 'UNHEALTHY',
@@ -83,65 +112,29 @@ export const getSystemHealth = async (): Promise<SystemHealth> => {
 };
 
 export const getReports = async (): Promise<Report[]> => {
-  if (isDemoMode) return DEMO_REPORTS;
   try {
-    const res = await fetch('/api/reports');
-    return await res.json();
-  } catch {
+    const res = await fetch(`${API_URL}/api/reports`);
+
+    if (!res.ok) throw new Error('Failed to fetch reports');
+
+    const data = await res.json();
+    return data.reports || [];
+  } catch (error) {
+    console.error('getReports:', error);
     return [];
   }
 };
 
 export const getOperationalMetrics = async (): Promise<OperationalMetrics> => {
-  if (isDemoMode) {
-    // Generate mock metrics based on demo data
-    const activeHighRiskZones = DEMO_RISK_ZONES.filter(z => z.riskLevel === 'HIGH' || z.riskLevel === 'SEVERE').length;
-    const activeReports = DEMO_REPORTS.length;
-    const verifiedIncidents = DEMO_REPORTS.filter(r => r.verificationStatus !== 'UNVERIFIED').length;
-    const alertsSent = DEMO_ALERTS.length;
-    
-    // Mock time series
-    const now = new Date();
-    const riskOverTime = Array.from({length: 24}).map((_, i) => {
-      const t = new Date(now);
-      t.setHours(now.getHours() - (23 - i));
-      return { timestamp: t.toISOString(), value: 40 + Math.random() * 40 + (i > 18 ? 10 : 0) };
-    });
-    
-    const rainfallOverTime = Array.from({length: 24}).map((_, i) => {
-      const t = new Date(now);
-      t.setHours(now.getHours() - (23 - i));
-      return { timestamp: t.toISOString(), value: Math.max(0, 10 + Math.random() * 20 - (23-i)) };
-    });
-
-    const categoryMap = DEMO_REPORTS.reduce((acc, r) => {
-      acc[r.incidentType] = (acc[r.incidentType] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-    const reportsByCategory = Object.entries(categoryMap).map(([category, count]) => ({ category, count }));
-
-    const severityMap = DEMO_RISK_ZONES.reduce((acc, z) => {
-      acc[z.riskLevel] = (acc[z.riskLevel] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-    const riskZonesBySeverity = Object.entries(severityMap).map(([category, count]) => ({ category, count }));
-
-    return {
-      activeHighRiskZones,
-      activeReports,
-      verifiedIncidents,
-      alertsSent,
-      averageResponseTime: 12,
-      riskOverTime,
-      rainfallOverTime,
-      reportsByCategory,
-      riskZonesBySeverity
-    };
-  }
-  try {
-    const res = await fetch('/api/metrics');
-    return await res.json();
-  } catch {
-    throw new Error('Failed to fetch metrics');
-  }
+  return {
+    activeHighRiskZones: 0,
+    activeReports: 0,
+    verifiedIncidents: 0,
+    alertsSent: 0,
+    averageResponseTime: 0,
+    riskOverTime: [],
+    rainfallOverTime: [],
+    reportsByCategory: [],
+    riskZonesBySeverity: []
+  };
 };
