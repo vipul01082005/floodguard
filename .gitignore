@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.env
+.env.local
+*.local
+.aws-sam/
+__pycache__/
+*.pyc
+.pytest_cache/
+ml/models/*.joblib
+ml/data/*.csv
+ml/evaluation/*.png
+coverage/
+.DS_Store
