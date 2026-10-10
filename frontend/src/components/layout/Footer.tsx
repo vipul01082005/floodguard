@@ -6,12 +6,7 @@ export const Footer: React.FC = () => {
     <footer className="bg-slate-950 border-t border-slate-800 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex flex-col items-center md:items-start">
-            <span className="text-slate-300 font-medium tracking-tight">FloodGuard</span>
-            <span className="text-xs text-slate-500 mt-1">
-             
-            </span>
-          </div>
+
           
           <div className="flex items-center gap-6">
             <StatusIndicator status="Healthy" label="API" />
