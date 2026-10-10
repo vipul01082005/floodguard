@@ -9,7 +9,7 @@ export const Footer: React.FC = () => {
           <div className="flex flex-col items-center md:items-start">
             <span className="text-slate-300 font-medium tracking-tight">FloodGuard</span>
             <span className="text-xs text-slate-500 mt-1">
-              Built for AWS Environmental Hackathon &copy; {new Date().getFullYear()}
+             
             </span>
           </div>
           
